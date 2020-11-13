@@ -12,4 +12,14 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-            Release ${{ github.sha }} to <https://pr-${{ github.event.number }}.example.com>
+            # Thank you
+            
+            for opening this Pull Request!
+
+            This is an automated message to help you better understand your possibilities.
+            of how to kick-off actions by sending commands through comments to this PR.
+
+            Please issue a comment like `/build-on <builder>`, where `<builder>` is a buildbot
+            builder name.
+            
+            You can find a list of all builders on [this Buildbot page](http://master-route-www-llvm-pre-merge.apps.ocp.prod.psi.redhat.com/).
