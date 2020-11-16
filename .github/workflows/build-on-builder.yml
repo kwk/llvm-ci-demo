@@ -1,0 +1,41 @@
+name: build-on-builder
+
+on:
+  issue_comment:
+    types:
+      - created
+      - edited
+
+jobs:
+  check-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check comment
+        run: echo ${{ github.event.comment.body }} | grep '^/build-on '
+
+  build:
+    needs: check-comment
+    runs-on: [self-hosted]
+    steps:
+      - name: Set job variables
+        id: vars
+        run: |
+          echo ::set-output name=pr-head-branch::issue-${{ github.event.issue.number }}-pr
+          echo ::set-output name=pr-base-branch::main
+          echo ::set-output name=cherry-pick-commit::`echo ${{ github.event.comment.body }} | cut -d ' ' -f 2 | tr -d ' '`
+
+      # https://github.com/actions/checkout#checkout-pull-request-head-commit-instead-of-merge-commit
+      - name: Checkout Pull Request
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # - name: Checkout code master code
+      #   if: startswith(github.event.comment.body, '/build-on ') 
+      #   uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     # Repository name with owner. For example, actions/checkout
+      #     # Default: ${{ github.repository }}
+      #     repository: kwk/llvm-ci-demo
+      #     ref: ${{ steps.vars.outputs.pr-base-branch }}
