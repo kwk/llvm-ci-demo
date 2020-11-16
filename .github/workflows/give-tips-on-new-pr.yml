@@ -12,7 +12,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-            # Thank you
+            # Thank you @${{ github.event.pull_request.user.login }}
             
             for opening this Pull Request!
 
