@@ -36,10 +36,23 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Cancelled 
-        if: ${{ cancelled() }}
+      # - name: Cancelled 
+      #   if: ${{ cancelled() }}
+      #   run: |
+      #     echo "::warning::Job was manually cancelled"
+
+      - name: Build using buildbot try
         run: |
-          echo "::warning::Job was manually cancelled"
+          buildbot try \
+            --master llvm-pre-merge.apps.ocp.prod.psi.redhat.com:30008 \
+            --passwd="${{ secrets.TRY_USER }}" \
+            --username="${{ secrets.TRY_PASSWORD }}" \
+            --connect="pb" \
+            --vc="git" \
+            --builder="${{ steps.vars.outputs.builder-name }}" \
+            --baserev="main" \
+            --branch="main" \
+            --repository="${{ github.repository }}"
 
       - name: Summary
         if: ${{ always() }}
